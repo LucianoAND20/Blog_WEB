@@ -2,14 +2,34 @@
 const express = require('express');
 // importando o módulo body-parser
 const bodyParser = require('body-parser');
+
+const bcypt = require('bcypt.js');
+const slugify = require('slugify');
+
+/**
+* importando o módulo interno database.js
+* Atenção: não adicione a extensão ao arquivo (.js)
+*/
+const connection = require('./database/database');
+
+const Usuarios = require('./database/Usuarios');
+
 // instanciando o express.js
 const app = express();
 // Iniciando a nossa View engine EJS
 app.set('view engine', 'ejs');
-// utilizando o body parser para trabalhar com formulários
+// utilizando o body-parser para trabalhar com formulários
 app.use(bodyParser.urlencoded({ extended: false }));
 // além de aceitar dados de formulário também aceitará dados noformato json
 app.use(bodyParser.json());
+// Conectando ao banco de dados
+connection.authenticate()
+    .then(() => {
+        console.log('Conexão realizada com sucesso!');
+    })
+    .catch(($error) => {
+        console.log($error);
+    });
 // vamos configurar o express para que os arquivos estáticos(css, js, imagem etc)
 app.use(express.static('assets'));
 /**
@@ -25,17 +45,6 @@ criar a rota.
 // Rota para a página inicial do nosso aplicativo
 app.get('/', function ($req, $res) {
     $res.render('index');
-});
-// Rota para a página de envio do formulário de contato
-app.get('/cadastro', function($req, $res) {$res.render('cadastro');
-    });
-// Rota para o recebimento dos dados de formulário
-app.post('/cadastrar_usuario', function ($req, $res) {
-    var $nome = $req.body.nome;
-    var $email = $req.body.email;
-    var $senha = $req.body.senha;
-    $res.send(`Usuário: ${$nome} de e-mail ${$email} e senha
-    ${$senha}`);
 });
 /*
 * O primeiro parâmetro é a porta na qual o nosso servidor vai
