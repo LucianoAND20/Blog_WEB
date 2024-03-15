@@ -1,0 +1,67 @@
+<%- include ('partials/header.ejs') %>
+
+    <body class="bg-light">
+        <%- include ('partials/navbar.ejs') %>
+            <div class="container jumbotron my-3">
+                <div class="d-flex my-3 flex-row-reverse bd-highlight">
+                    <div class="p-2 bd-highlight">
+                        <a href="/admin/usuarios/cadastrar" class="btn
+    btn-primary">Cadastrar usuário</a>
+                    </div>
+                </div>
+                <% if( usuarios.length> 0 ) { %>
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Ações</th>
+                        </thead>
+                        <tbody>
+                            <% usuarios.forEach(usuario=> { %>
+                                <tr>
+                                    <td>
+                                        <%= usuario.id %>
+                                    </td>
+                                    <td>
+                                        <%= usuario.nome %>
+                                    </td>
+                                    <td>
+                                        <%= usuario.email %>
+                                    </td>
+                                    <td>
+                                        <a href="/admin/usuarios/editar/<%=
+    usuario.id %>" class="btn btn-warning btn-sm">Editar</a>
+                                        <form class="delete_form" method="POST" action="/admin/usuarios/action_excluir"
+                                            style="display: inline;" onsubmit="confirmarExclusao( event,
+    this )">
+                                            <input type="hidden" name="id" value="<%= usuario.id %>">
+                                            <button class="btn btn-danger
+    btn-sm">Excluir</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+                    <% } else { %>
+                        <div class="alert alert-warning" role="alert">
+                            Nenhum usuário foi encontrado.
+                        </div>
+                        <% } %>
+            </div>
+    </body>
+    <script>
+        function confirmarExclusao($event, $form) {
+            // impede o evento submit de acontecer
+            $event.preventDefault();
+            var $confirm = window.confirm('Tem certeza que desejaexcluir esse usuário ? ');
+    if ($confirm == true) {
+                // realiza a exclusão
+                $form.submit();
+            } else {
+                console.log('Não quero excluir.');
+            }
+        }
+    </script>
+    <%- include ('partials/footer.ejs') %>

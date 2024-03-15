@@ -3,7 +3,7 @@ const express = require('express');
 // importando o módulo body-parser
 const bodyParser = require('body-parser');
 
-const bcypt = require('bcypt.js');
+const bcrypt = require('bcryptjs');
 const slugify = require('slugify');
 
 /**
@@ -12,7 +12,7 @@ const slugify = require('slugify');
 */
 const connection = require('./database/database');
 
-const Usuarios = require('./database/Usuarios');
+const Usuarios = require('./database/Usuarios')
 
 // instanciando o express.js
 const app = express();
@@ -46,6 +46,18 @@ criar a rota.
 app.get('/', function ($req, $res) {
     $res.render('index');
 });
+
+// Rota para a página de listagem de usuários
+app.get('/admin/usuarios', function($req, $res) {
+    Usuarios.findAll()
+    .then( $usuarios => {
+    $res.render('usuarios', {usuarios: $usuarios});
+    })
+    .catch(() => {
+    $res.redirect('/');
+    });
+});
+
 /*
 * O primeiro parâmetro é a porta na qual o nosso servidor vai
 rodar
